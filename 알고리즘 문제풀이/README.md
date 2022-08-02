@@ -36,20 +36,20 @@
 - [RGB거리 2](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%201/17404%20RGB%EA%B1%B0%EB%A6%AC%202.py)
 - 합분해
 
-# 백준 알고리즘 기초 1
+# 백준 알고리즘 기초 2
 
 ## 브루트 포스
 - [일곱 난쟁이](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/2309%20%EC%9D%BC%EA%B3%B1%20%EB%82%9C%EC%9F%81%EC%9D%B4.py)
 - [사탕 게임](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/3085%20%EC%82%AC%ED%83%95%20%EA%B2%8C%EC%9E%84.py)
-- 날짜 계산
+- [날짜 계산](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/1476%20%EB%82%A0%EC%A7%9C%20%EA%B3%84%EC%82%B0.py)
 - 리모컨
 - 테트로미노
 - 카잉 달력
-- 수 이어 쓰기 1
+- [수 이어 쓰기 1](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/1748%20%EC%88%98%20%EC%9D%B4%EC%96%B4%EC%93%B0%EA%B8%B0.py)
 - 1, 2, 3 더하기
 
 ## 브루트 포스 (N과 M)
-- N과 M (1)
+- [N과 M (1)](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/15649%20N%EA%B3%BC%20M.py)
 - N과 M (2)
 - N과 M (3)
 - N과 M (4)
