@@ -86,10 +86,10 @@
 - 종이 조각
 
 ## 그래프 1
-- ABCDE
-- DFS와 BFS
-- 연결 요소의 개수
-- 이분 그래프
+- [ABCDE](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/13023%20ABCDE.py)
+- [DFS와 BFS](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/1260%20DFS%EC%99%80%20BFS.py)
+- [연결 요소의 개수](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/11724%20%EC%97%B0%EA%B2%B0%20%EC%9A%94%EC%86%8C%EC%9D%98%20%EA%B0%9C%EC%88%98.py)
+- [이분 그래프](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/1707%20%EC%9D%B4%EB%B6%84%20%EA%B7%B8%EB%9E%98%ED%94%84.py)
 - 단지번호붙이기
 - 섬의 개수
 - 미로 탐색
@@ -97,8 +97,8 @@
 - 나이트의 이동
 
 ## 그래프 1 (연습)
-- Two Dots
-- 서울 지하철 2호선
+- [Two Dots](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/16926%20Tow%20dot.py)
+- [서울 지하철 2호선](https://github.com/ChoiBigO/Study/blob/main/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4/%EB%B0%B1%EC%A4%80%20%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EA%B8%B0%EC%B4%88%202/16947%20%EC%84%9C%EC%9A%B8%20%EC%A7%80%ED%95%98%EC%B2%A0%202%ED%98%B8%EC%84%A0.py)
 
 ## 그래프 1 (도전)
 - BFS 스페셜 저지
