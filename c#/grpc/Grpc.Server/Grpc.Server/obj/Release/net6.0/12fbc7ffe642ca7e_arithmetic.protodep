@@ -1,0 +1,2 @@
+obj\Release\net6.0\Protos/Arithmetic.cs \
+obj\Release\net6.0\Protos/ArithmeticGrpc.cs: Protos/arithmetic.proto
