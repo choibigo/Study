@@ -7,7 +7,7 @@
 
 using grpc = global::Grpc.Core;
 
-namespace Arithmetic {
+namespace ArithmeticNamespace {
   /// <summary>
   /// 인터페이스 정의
   /// </summary>
@@ -49,12 +49,12 @@ namespace Arithmetic {
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::Arithmetic.RequestMessage> __Marshaller_Arithmetic_RequestMessage = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Arithmetic.RequestMessage.Parser));
+    static readonly grpc::Marshaller<global::ArithmeticNamespace.RequestMessage> __Marshaller_Arithmetic_RequestMessage = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::ArithmeticNamespace.RequestMessage.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::Arithmetic.ResponseMessage> __Marshaller_Arithmetic_ResponseMessage = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Arithmetic.ResponseMessage.Parser));
+    static readonly grpc::Marshaller<global::ArithmeticNamespace.ResponseMessage> __Marshaller_Arithmetic_ResponseMessage = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::ArithmeticNamespace.ResponseMessage.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage> __Method_Add = new grpc::Method<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage>(
+    static readonly grpc::Method<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage> __Method_Add = new grpc::Method<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage>(
         grpc::MethodType.Unary,
         __ServiceName,
         "Add",
@@ -62,7 +62,7 @@ namespace Arithmetic {
         __Marshaller_Arithmetic_ResponseMessage);
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage> __Method_Substract = new grpc::Method<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage>(
+    static readonly grpc::Method<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage> __Method_Substract = new grpc::Method<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage>(
         grpc::MethodType.Unary,
         __ServiceName,
         "Substract",
@@ -72,7 +72,7 @@ namespace Arithmetic {
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
-      get { return global::Arithmetic.ArithmeticReflection.Descriptor.Services[0]; }
+      get { return global::ArithmeticNamespace.ArithmeticReflection.Descriptor.Services[0]; }
     }
 
     /// <summary>Base class for server-side implementations of ArithmeticService</summary>
@@ -80,13 +80,13 @@ namespace Arithmetic {
     public abstract partial class ArithmeticServiceBase
     {
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::System.Threading.Tasks.Task<global::Arithmetic.ResponseMessage> Add(global::Arithmetic.RequestMessage request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::ArithmeticNamespace.ResponseMessage> Add(global::ArithmeticNamespace.RequestMessage request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::System.Threading.Tasks.Task<global::Arithmetic.ResponseMessage> Substract(global::Arithmetic.RequestMessage request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::ArithmeticNamespace.ResponseMessage> Substract(global::ArithmeticNamespace.RequestMessage request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -110,8 +110,8 @@ namespace Arithmetic {
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     public static void BindService(grpc::ServiceBinderBase serviceBinder, ArithmeticServiceBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_Add, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage>(serviceImpl.Add));
-      serviceBinder.AddMethod(__Method_Substract, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Arithmetic.RequestMessage, global::Arithmetic.ResponseMessage>(serviceImpl.Substract));
+      serviceBinder.AddMethod(__Method_Add, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage>(serviceImpl.Add));
+      serviceBinder.AddMethod(__Method_Substract, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::ArithmeticNamespace.RequestMessage, global::ArithmeticNamespace.ResponseMessage>(serviceImpl.Substract));
     }
 
   }

@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Arithmetic {
+namespace ArithmeticNamespace {
 
   /// <summary>Holder for reflection information generated from Protos/arithmetic.proto</summary>
   public static partial class ArithmeticReflection {
@@ -30,12 +30,12 @@ namespace Arithmetic {
             "Y1NlcnZpY2USQAoDQWRkEhouQXJpdGhtZXRpYy5SZXF1ZXN0TWVzc2FnZRob",
             "LkFyaXRobWV0aWMuUmVzcG9uc2VNZXNzYWdlIgASRgoJU3Vic3RyYWN0Ehou",
             "QXJpdGhtZXRpYy5SZXF1ZXN0TWVzc2FnZRobLkFyaXRobWV0aWMuUmVzcG9u",
-            "c2VNZXNzYWdlIgBCDaoCCkFyaXRobWV0aWNiBnByb3RvMw=="));
+            "c2VNZXNzYWdlIgBCFqoCE0FyaXRobWV0aWNOYW1lc3BhY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Arithmetic.RequestMessage), global::Arithmetic.RequestMessage.Parser, new[]{ "First", "Second" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Arithmetic.ResponseMessage), global::Arithmetic.ResponseMessage.Parser, new[]{ "Result" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::ArithmeticNamespace.RequestMessage), global::ArithmeticNamespace.RequestMessage.Parser, new[]{ "First", "Second" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::ArithmeticNamespace.ResponseMessage), global::ArithmeticNamespace.ResponseMessage.Parser, new[]{ "Result" }, null, null, null, null)
           }));
     }
     #endregion
@@ -57,7 +57,7 @@ namespace Arithmetic {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Arithmetic.ArithmeticReflection.Descriptor.MessageTypes[0]; }
+      get { return global::ArithmeticNamespace.ArithmeticReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -268,7 +268,7 @@ namespace Arithmetic {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Arithmetic.ArithmeticReflection.Descriptor.MessageTypes[1]; }
+      get { return global::ArithmeticNamespace.ArithmeticReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

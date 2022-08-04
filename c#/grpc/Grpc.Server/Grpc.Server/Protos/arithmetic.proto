@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "Arithmetic";
+option csharp_namespace = "ArithmeticNamespace";
 
 package Arithmetic;
 
