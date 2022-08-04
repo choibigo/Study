@@ -13,9 +13,11 @@ namespace Grpc.Server.Services
 
 		public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
 		{
+			Console.WriteLine("Server Call Success");
+			
 			return Task.FromResult(new HelloReply
 			{
-				Message = "Hello " + request.Name
+				Message = "Hello My Name Is" + request.Name
 			});
 		}
 	}

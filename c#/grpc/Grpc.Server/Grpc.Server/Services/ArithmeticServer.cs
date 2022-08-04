@@ -28,6 +28,8 @@ namespace Grpc.Server
 			var r = new ResponseMessage(); // 반환값 선언
 			r.Result = request.First + request.Second; // 실제 구현
 
+			Console.WriteLine("Add Call");
+
 			return Task.FromResult(r); // Task 형태로 반환
 		}
 
