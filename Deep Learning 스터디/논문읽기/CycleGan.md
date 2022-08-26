@@ -7,6 +7,7 @@
   - Discriminator는 특정 이미지의 진짜/가짜 여부를 판별 한다.
   - Generator는 판별자를 속일 수 있는 이미지를 생성 한다.
   <br>
+  
   ![image](https://www.researchgate.net/publication/340481789/figure/fig1/AS:877673731596293@1586265132992/The-original-generative-adversarial-network-GAN-model-In-simple-terms-G-wants-to.png)
 - Generator와 Discriminator 가 서로 경쟁적으로 학습 하며 결과적으로 Generator는 실제와 같은 이미지를 생성한다.
 
