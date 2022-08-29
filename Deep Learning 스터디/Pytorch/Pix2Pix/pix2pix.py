@@ -1,4 +1,3 @@
-
 import os
 import glob
 import numpy as np
@@ -15,11 +14,12 @@ import time
 
 parameters = {
     "epoch" : 100,
-    "save_epoch" : 5,
+    "save_epoch" : 1,
     "batch_size" : 2,
     "lr" : 1e-3,
-    "train_data_set_1" : "D:\\workspace\\data\\pix2pix\\facades\\train\\a\\",
-    "train_data_set_2" : "D:\\workspace\\data\\pix2pix\\facades\\train\\b\\",
+    "lambda_pixel": 100,
+    "contesnt_dataset" : "D:\\workspace\\data\\pix2pix\\facades\\train\\b\\",
+    "style_dataset" : "D:\\workspace\\data\\pix2pix\\facades\\train\\a\\",
     "test_data_set" : "",
     "preprocessing":{
         "resize" : 256,
@@ -38,8 +38,8 @@ def RecipeRun(parameter):
 
     preprocess = preprocessing(parameter['preprocessing'])
 
-    contents_root =  parameter['train_data_set_1']
-    style_root =  parameter['train_data_set_2']
+    contents_root =  parameter['contesnt_dataset']
+    style_root =  parameter['style_dataset']
 
     data_uri_list = data_uri(contents_root, style_root)
 
@@ -58,64 +58,68 @@ def RecipeRun(parameter):
     discriminator.apply(weights_init_normal)
 
     # 손실 함수(loss function)
-    criterion_GAN = torch.nn.MSELoss() 
+    criterion_gan = torch.nn.MSELoss() 
     criterion_pixelwise = torch.nn.L1Loss()
-    criterion_GAN.cuda()
-    criterion_pixelwise.cuda()
 
     # 생성자와 판별자를 위한 최적화 함수
-    optimizer_G = torch.optim.Adam(generator.parameters(), lr=parameter['lr'])
-    optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=parameter['lr'])
-
-    # 픽셀 단위 Loss인 L1의 차수
-    lambda_pixel = 100
+    optimizer_generator = torch.optim.Adam(generator.parameters(), lr=parameter['lr'])
+    optimizer_discriminator = torch.optim.Adam(discriminator.parameters(), lr=parameter['lr'])
 
     start_time = time.time()
 
     for epoch in range(1, parameter['epoch']+1):
         for n_epochs, batch in enumerate(dataloader):
+
             # 모델의 입력(input) 데이터 불러오기
-            real_A = batch[1].cuda()
-            real_B = batch[0].cuda()
+            contents_image = batch[0]
+            style_image = batch[1]
+
+            if parameter['using_gpu']:
+                contents_image = contents_image.cuda()
+                style_image = style_image.cuda()
 
             # 진짜(real) 이미지와 가짜(fake) 이미지에 대한 정답 레이블 생성 (너바와 높이를 16씩 나눈 크기)
-            real = torch.cuda.FloatTensor(real_A.size(0), 1, 16, 16).fill_(1.0) # 진짜(real): 1
-            fake = torch.cuda.FloatTensor(real_A.size(0), 1, 16, 16).fill_(0.0) # 가짜(fake): 0
+            real_answer = torch.FloatTensor(contents_image.size(0), 1, 16, 16).fill_(1.0) # 진짜(real): 1
+            fake_answer = torch.FloatTensor(contents_image.size(0), 1, 16, 16).fill_(0.0) # 가짜(fake): 0
+
+            if parameter['using_gpu']:
+                real_answer = real_answer.cuda()
+                fake_answer = fake_answer.cuda()
 
             """ 생성자(generator)를 학습합니다. """
-            optimizer_G.zero_grad()
+            optimizer_generator.zero_grad()
 
             # 이미지 생성
-            fake_B = generator(real_A)
+            fake_image = generator(contents_image)
 
             # 생성자(generator)의 손실(loss) 값 계산
-            loss_GAN = criterion_GAN(discriminator(fake_B, real_A), real)
+            loss_generator = criterion_gan(discriminator(fake_image, contents_image), real_answer)
 
             # 픽셀 단위(pixel-wise) L1 손실 값 계산
-            loss_pixel = criterion_pixelwise(fake_B, real_B) 
+            loss_pixel = criterion_pixelwise(fake_image, style_image) 
 
             # 최종적인 손실(loss)
-            loss_G = loss_GAN + lambda_pixel * loss_pixel
+            result_loss_generator = loss_generator + parameter['lambda_pixel'] * loss_pixel
 
             # 생성자(generator) 업데이트
-            loss_G.backward()
-            optimizer_G.step()
+            result_loss_generator.backward()
+            optimizer_generator.step()
 
             """ 판별자(discriminator)를 학습합니다. """
-            optimizer_D.zero_grad()
+            optimizer_discriminator.zero_grad()
 
             # 판별자(discriminator)의 손실(loss) 값 계산
-            loss_real = criterion_GAN(discriminator(real_B, real_A), real) # 조건(condition): real_A
-            loss_fake = criterion_GAN(discriminator(fake_B.detach(), real_A), fake)
-            loss_D = (loss_real + loss_fake) / 2
+            loss_real = criterion_gan(discriminator(style_image, contents_image), real_answer) # 조건(condition): real_A
+            loss_fake = criterion_gan(discriminator(fake_image.detach(), contents_image), fake_answer)
+            loss_discriminator = (loss_real + loss_fake) / 2
 
             # 판별자(discriminator) 업데이트
-            loss_D.backward()
-            optimizer_D.step()
+            loss_discriminator.backward()
+            optimizer_discriminator.step()
 
-        print(f"[Epoch {epoch}] [D loss: {loss_D.item():.6f}] [G pixel loss: {loss_pixel.item():.6f}, adv loss: {loss_GAN.item()}] [Elapsed time: {time.time() - start_time:.2f}")
+        print(f"[Epoch {epoch}] [D loss: {loss_discriminator.item():.6f}] [G pixel loss: {loss_pixel.item():.6f}, adv loss: {loss_generator.item()}] [Elapsed time: {time.time() - start_time:.2f}")
         if epoch % parameter['save_epoch'] == 0:
-            img_sample = torch.cat((real_A.data, fake_B.data, real_B.data), -2) # 높이(height)를 기준으로 이미지를 연결하기
+            img_sample = torch.cat((contents_image.data, fake_image.data, style_image.data), -2) # 높이(height)를 기준으로 이미지를 연결하기
             save_image(img_sample, f"D:\\temp\\inference\\Pix2Pix\\{epoch}.png", nrow=5, normalize=True)
 
             generator_script = torch.jit.script(generator)
@@ -291,8 +295,6 @@ def preprocessing(parameter):
                 transforms.Normalize((normalize_mean, normalize_mean, normalize_mean), (normalize_std, normalize_std, normalize_std))])
 
     return preprocess
-
-
 
 if __name__ == "__main__":
     RecipeRun(parameters)
