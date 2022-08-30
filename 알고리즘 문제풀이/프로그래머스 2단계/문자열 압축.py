@@ -1,42 +1,30 @@
-from collections import deque
-
-def solution(bridge_length, weight, truck_weights):
+def solution(s):
     
-    truck_weights = deque(truck_weights)
-    ing_trucks = deque()
-    truck_sum = 0
-
-    print(truck_weights[0])
-    
-    # Debug
-    break_i = 1
-    
-    while len(truck_weights) != 0 or len(ing_trucks) != 0:
-
-        if len(truck_weights) != 0:
-            if truck_sum + truck_weights[0] <= weight and len(ing_trucks) < bridge_length:
-                truck_sum += truck_weights[0]
-                ing_trucks.append([0, truck_weights.popleft()])
+    for i in range(1, len(s)//2):
+        result = ""
+        temp = s[:i]
+        count = 1
         
-        if len(ing_trucks) != 0:
-            if ing_trucks[0][0] == bridge_length:
-                truck_sum-=ing_trucks[0][1]
-                ing_trucks.popleft()
-
-            for i in range(len(ing_trucks)):
-                ing_trucks[i][0] += 1
+        for j in range(i, len(s), i):
+            if s[j:i+j] == temp:
+                count +=1
+            else:
+                if count != 1:
+                    result += (str(count) + temp)                    
+                else:
+                    result += temp
                 
-                
-        print(f"#### {break_i} ####")
-        print(truck_weights)    
-        print(ing_trucks)  
-
-        if break_i > 10:
-            break
+                temp = s[j:i+j]
+                count = 1
             
-        break_i+=1
-
+        if count != 1:
+            result += (str(count) + temp)                    
+        else:
+            result += temp
     
-    return 1
+    
+    return result
 
-solution(2, 10, [7,4,5,6])
+
+if __name__ == "__main__":
+    solution("abcabcabcabc6de")
