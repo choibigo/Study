@@ -31,6 +31,8 @@ def RecipeRun(parameter):
         [transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
+    label_info = {'labels': 'plane#car#bird#cat#deer#dog#fog#horse#ship#truck'}
+
     trainset = torchvision.datasets.CIFAR10(root='./Deep Learning 스터디/data', train=True,
                                         download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=parameter['batch_size'],
@@ -43,11 +45,8 @@ def RecipeRun(parameter):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr = parameter['lr'])
 
-    input_paramter = next(model.parameters())
-    print(input_paramter.shape)
-
     print("Train Start")
-    for epoch in range(1, parameter['epoch']):
+    for epoch in range(1, parameter['epoch']+1):
         epoch_loss = 0.0
         for i, batch in enumerate(trainloader, 1):
             inputs, labels = batch
@@ -55,9 +54,7 @@ def RecipeRun(parameter):
             if torch.cuda.is_available() and parameter['using_gpu']:
                 inputs = inputs.cuda()
                 labels = labels.cuda()
-            
 
-            print(inputs.shape)
             output, aux1, aux2 = model(inputs)
 
             optimizer.zero_grad()
@@ -67,7 +64,7 @@ def RecipeRun(parameter):
             optimizer.step()
 
             epoch_loss += loss.item()
-            # print(f"Epoch : {epoch} {i}/{int(len(trainset)/parameter['batch_size'])}, Loss : {loss}")
+            print(f"Epoch : {epoch} {i}/{int(len(trainset)/parameter['batch_size'])}, Loss : {loss}")
 
         print(f"Epoch : {epoch}, Loss : {epoch_loss / (len(trainset)/parameter['batch_size'])} ### ")
 
@@ -75,7 +72,7 @@ def RecipeRun(parameter):
             with torch.no_grad():
 
                 model_script = torch.jit.script(model)
-                torch.jit.save(model_script, f"{parameter['model_save_path']}\\googlenet_{epoch}.pth")
+                torch.jit.save(model_script, f"{parameter['model_save_path']}\\googlenet_{epoch}.pth", _extra_files = label_info)
 
 
 
