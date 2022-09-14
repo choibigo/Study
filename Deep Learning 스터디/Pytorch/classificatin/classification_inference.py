@@ -26,8 +26,8 @@ class ModelHandler:
 
     def __inference(self, data): 
         data = self.__preprocessing(data)
-        output = self.__model(data)
-        output = self.__postprocessing(output[0][0])
+        output, _, _ = self.__model(data)
+        output = self.__postprocessing(output[0])
         return output
 
     def __preprocessing(self, image):
@@ -41,7 +41,6 @@ class ModelHandler:
     def __postprocessing(self, result):
 
         output = list()
-
         for i in range(self.__label_info['label_count']):
             current_label = self.__label_info[f'label_{i}']
             current_label['score'] = result[i].item()
