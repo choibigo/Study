@@ -1,24 +1,12 @@
-import mpp
-from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-import io
-import logging
-import time
 import torch
 import torchvision
 import torchvision.transforms as transforms
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import Dataset
-import torch.optim as optim
-
+import json
 
 # Parameters
 paramters = {
     "epoch" : 50,
-    "save_epoch" : 5,
+    "save_epoch" : 1,
     "batch_size" : 64,
     "lr" : 1e-3,
     "num_classes" : 10,
@@ -31,7 +19,23 @@ def RecipeRun(parameter):
         [transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    label_info = {'labels': 'plane#car#bird#cat#deer#dog#fog#horse#ship#truck'}
+    label_info_json = {
+        "label_count" : 10,
+        "label_0" : {"code" : 5, "name" : "plane"},
+        "label_1" : {"code" : 3, "name" : "automobile"},
+        "label_2" : {"code" : 7, "name" : "bird"},
+        "label_3" : {"code" : 9, "name" : "cat"},
+        "label_4" : {"code" : 4, "name" : "deer"},
+        "label_5" : {"code" : 1, "name" : "dog"},
+        "label_6" : {"code" : 8, "name" : "frog"},
+        "label_7" : {"code" : 6, "name" : "horse"},
+        "label_8" : {"code" : 2, "name" : "ship"},
+        "label_9" : {"code" : 0, "name" : "truck"}
+        }
+    
+    extra_files = {
+        'label_info': json.dumps(label_info_json)
+    }
 
     trainset = torchvision.datasets.CIFAR10(root='./Deep Learning 스터디/data', train=True,
                                         download=True, transform=transform)
@@ -72,7 +76,7 @@ def RecipeRun(parameter):
             with torch.no_grad():
 
                 model_script = torch.jit.script(model)
-                torch.jit.save(model_script, f"{parameter['model_save_path']}\\googlenet_{epoch}.pth", _extra_files = label_info)
+                torch.jit.save(model_script, f"{parameter['model_save_path']}\\googlenet_{epoch}.pth", _extra_files = extra_files)
 
 
 

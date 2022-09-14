@@ -1,5 +1,6 @@
 import torch
 import torchvision.transforms as transforms
+import json
 
 class ModelHandler:
     def __init__(self, model_path, resize = 32):
@@ -7,25 +8,26 @@ class ModelHandler:
         self.__device = "cpu"
 
         self.__model_file_path = model_path
-        self.__model, self.__labels = self.__load_model()
+        self.__model, self.__label_info = self.__load_model()
 
     def __call__(self, data):
         output = self.__inference(data)
         return output
 
     def __load_model(self):
-        labels_info = {'labels' : ''}
-        model = torch.jit.load(self.__model_file_path, map_location=self.__device, _extra_files=labels_info)
+        extra_files = {'label_info' : {}}
+        model = torch.jit.load(self.__model_file_path, map_location=self.__device, _extra_files=extra_files)
         model.eval()
 
-        label_list = labels_info['labels'].decode('ascii').split("#")
+        label_info = extra_files['label_info'].decode('ascii')
+        label_info = json.loads(label_info)
 
-        return model, label_list
+        return model, label_info
 
-    def __inference(self, data):
+    def __inference(self, data): 
         data = self.__preprocessing(data)
-        output = self.__model(data)
-        output = self.__postprocessing(output)
+        output, _, _ = self.__model(data)
+        output = self.__postprocessing(output[0])
         return output
 
     def __preprocessing(self, image):
@@ -37,9 +39,14 @@ class ModelHandler:
         return image
 
     def __postprocessing(self, result):
-        output = dict()
-        for score, label in zip(result[0][0], self.__labels):
-            output[label] = score.item()
+
+        output = list()
+        for i in range(self.__label_info['label_count']):
+            current_label = self.__label_info[f'label_{i}']
+            current_label['score'] = result[i].item()
+            output.append(current_label)
+
+        output = sorted(output, key = lambda x : x['score'], reverse=True)
 
         return output
 
@@ -58,9 +65,4 @@ if __name__ == "__main__":
 
     # # =================================================================== #
 
-    print(*list(inference_result.items()), sep="\n")
-
-    v = list(inference_result.values())
-    k = list(inference_result.keys())
-
-    print(k[v.index(max(v))], max(v))
+    print(*inference_result, sep="\n")
