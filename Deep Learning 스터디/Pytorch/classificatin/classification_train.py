@@ -2,21 +2,24 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 import json
+import time
 
 # Parameters
 paramters = {
     "epoch" : 50,
     "save_epoch" : 1,
-    "batch_size" : 64,
+    "batch_size" : 2,
     "lr" : 1e-3,
     "num_classes" : 10,
-    "using_gpu" : True,
+    "using_gpu" : False,
+    "using_amp" : True,
     "model_save_path":"D:\\temp\\save_model\\GoogleNet\\"
 }
 def RecipeRun(parameter):
     
     transform = transforms.Compose(
         [transforms.ToTensor(),
+        # transforms.Resize((512,512)),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     label_info_json = {
@@ -53,22 +56,24 @@ def RecipeRun(parameter):
     for epoch in range(1, parameter['epoch']+1):
         epoch_loss = 0.0
         for i, batch in enumerate(trainloader, 1):
+            iteration_start_time = time.time()
             inputs, labels = batch
             
             if torch.cuda.is_available() and parameter['using_gpu']:
                 inputs = inputs.cuda()
                 labels = labels.cuda()
 
-            output, aux1, aux2 = model(inputs)
+            with torch.cuda.amp.autocast(enabled=paramters['using_amp']):
+                output, aux1, aux2 = model(inputs)
+                loss = criterion(output, labels)
 
             optimizer.zero_grad()
-            loss = criterion(output, labels)
-
             loss.backward()
             optimizer.step()
 
             epoch_loss += loss.item()
-            print(f"Epoch : {epoch} {i}/{int(len(trainset)/parameter['batch_size'])}, Loss : {loss}")
+            iteration_elapsed_time = time.time() - iteration_start_time
+            print(f"Epoch : {epoch} {i}/{int(len(trainset)/parameter['batch_size'])}, Loss : {loss}, Time : {iteration_elapsed_time}")
 
         print(f"Epoch : {epoch}, Loss : {epoch_loss / (len(trainset)/parameter['batch_size'])} ### ")
 
@@ -77,7 +82,6 @@ def RecipeRun(parameter):
 
                 model_script = torch.jit.script(model)
                 torch.jit.save(model_script, f"{parameter['model_save_path']}\\googlenet_{epoch}.pth", _extra_files = extra_files)
-
 
 
 if __name__ =="__main__":
