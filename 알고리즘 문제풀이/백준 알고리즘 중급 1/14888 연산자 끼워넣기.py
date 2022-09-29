@@ -1,6 +1,5 @@
 import input_setting
 
-from itertools import permutations
 import sys
 
 max_val = -10000000001
