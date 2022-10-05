@@ -14,6 +14,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 from torch.optim.lr_scheduler import MultiStepLR
+from sklearn.metrics import jaccard_score as jsc
+
 
 # Paramter
 paramters = ''' {
@@ -39,6 +41,12 @@ logger = logging.getLogger('workflow')
 logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
+
+def iou(pred, target):
+    pred = torch.argmax(pred, 1)
+    pred = pred.cpu().data.numpy().reshape(-1)
+    target = target.cpu().data.numpy().reshape(-1)
+    return jsc(pred,target, average=None)
 
 class FastSCNN(nn.Module):
     def __init__(self, num_classes, aux=False, **kwargs):
@@ -460,6 +468,8 @@ def Trainer(**kwargs):
             with torch.cuda.amp.autocast(enabled=hyperparameter['using_amp']):
                 outputs = model(images)
                 loss = criterion(outputs[0], targets)
+
+            temp = iou(outputs[0], targets)
 
             optimizer.zero_grad()
             loss.backward()
