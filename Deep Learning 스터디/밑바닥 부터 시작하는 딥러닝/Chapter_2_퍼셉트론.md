@@ -54,6 +54,17 @@ def AND_bias(x1, x2):
 - 편향은 가중치 W1, W2와 기능이 다르다.
 - 가중치는 입력 신호가 결과에 주는 영향력(중요도)을 조절하는 매개 변수 이고, 편향은 뉴런이 얼마나 쉽게 활성화(결과로 1을 출력) 하느냐를 조정하는 매개 변수 이다.
 
+#### 편향은 왜 필요 할까?
+![](https://media.geeksforgeeks.org/wp-content/uploads/Screenshot-from-2018-09-09-19-18-31.png)
+![](https://media.geeksforgeeks.org/wp-content/uploads/Screenshot-from-2018-09-09-19-40-18.png)
+- bias를 통해 activation function이 작동 할지 안할지를 관리 할 수 있다.
+- 네트워크 학습시 더 유연하게 학습할 수 있다.
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FCKOVF%2FbtrvAcbtWih%2FGBolgaIDOsaGVLKEkmKE21%2Fimg.png)
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fc72Pzo%2FbtrvuOQW70k%2F6iWHHyLk85QNp0hG4IkoKK%2Fimg.png)
+- bias가 있다면 좀더 데이터를 잘 나타낼 수 있다.
+[참고](https://webnautes.tistory.com/1655)
+
 ## 퍼셉트론의 한계
 - 지금까지 구현한 퍼셉트론으로 XOR 게이트를 구현할 수 없다.
 - 지금까지 퍼셉트론은 직선으로 나눈 두영역을 만들기 때문에 XOR를 구현할 수 없다.
