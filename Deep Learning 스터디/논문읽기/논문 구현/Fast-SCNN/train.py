@@ -14,8 +14,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 from torch.optim.lr_scheduler import MultiStepLR
-from sklearn.metrics import jaccard_score as jsc
-
+from sklearn.metrics import jaccard_score
+from torchmetrics import JaccardIndex
 
 # Paramter
 paramters = ''' {
@@ -42,11 +42,105 @@ logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 
-def iou(pred, target):
+def Trainer(**kwargs):
+
+    if kwargs['hyperparameter']['using_gpu'] and not torch.cuda.is_available():
+        raise Exception("GPU is not avaiable")
+
+    hyperparameter = kwargs['hyperparameter']
+    device = 'cuda' if kwargs['hyperparameter']['using_gpu'] else 'cpu'
+
+    logger.info("Temp Folder Create")
+    # local_download_path = os.path.join(f"/temp/{uuid.uuid4()}")
+    # train_path_list, valid_path_list = download_image(local_download_path,
+    #                                                 hyperparameter['train_ratio'],
+    #                                                 hyperparameter['input_size'],
+    #                                                 hyperparameter['random_crop_base_size'])
+
+    # Need To Remove
+    train_path_list = download_image2()
+
+    # Need To Change
+    # class, Pixel
+    label_info = [0,255]
+    train_dataset = SegmentationDataset(data_path_list=train_path_list,
+                                        label_info=label_info)
+
+    train_loader = data.DataLoader(dataset=train_dataset,
+                                        batch_size=hyperparameter['batch_size'],
+                                        shuffle=False,
+                                        drop_last=True,
+                                        num_workers=0)
+
+    model = FastSCNN(num_classes=len(label_info)).to(device)
+
+    loss_weight = hyperparameter['loss_weight']
+    if loss_weight:
+        loss_weight = torch.FloatTensor(loss_weight)
+
+    criterion = torch.nn.CrossEntropyLoss(ignore_index=-1, weight=loss_weight).to(device)
+
+    optimizer = torch.optim.SGD(model.parameters(),
+                                lr=hyperparameter['lr'],
+                                momentum=hyperparameter['momentum'] ,
+                                weight_decay=hyperparameter['weight_decay'])
+
+    scheduler = MultiStepLR(optimizer, milestones=hyperparameter['milestones'], gamma=hyperparameter['gamma'])
+
+    extra_files = dict()
+    extra_files['label_info'] = json.dumps(label_info)
+    
+    print('Training Start')
+    total_iteration = len(train_loader)
+    train_loss_list = list()
+
+    for epoch in range(1, hyperparameter['epoch']+1):
+        epoch_start_time = time.time()
+        model.train()
+
+        train_epoch_loss = 0.0
+
+        iteration_start_time = time.time()
+        for n_count, (images, targets) in enumerate(train_loader, 1):
+            images = images.to(device)
+            targets = targets.to(device)
+
+            with torch.cuda.amp.autocast(enabled=hyperparameter['using_amp']):
+                outputs = model(images)
+                loss = criterion(outputs[0], targets)
+
+            
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            train_epoch_loss += loss.item()
+            if n_count % (total_iteration // 10) == 0 or n_count == total_iteration:
+                iteration_elapsed_time = time.time() - iteration_start_time
+                logger.info(f"Epoch:[{epoch:4d}/{hyperparameter['epoch']:4d}], Iter: [{n_count:4d}/{total_iteration:4d}], loss: {loss.item():4.4f}, Time: {iteration_elapsed_time:4.2f}s")
+                iteration_start_time = time.time()
+        scheduler.step()
+        train_loss_list.append(train_epoch_loss/n_count)
+
+        epoch_elapsed_time = time.time() - epoch_start_time
+        iou_score = iou(outputs[0], targets, len(label_info))
+        logger.info(f"Epoch:[{epoch:4d}/{hyperparameter['epoch']:4d}], loss: {train_epoch_loss/n_count:4.4f}, IoU: {iou_score:4.4f}, Time: {epoch_elapsed_time:4.2f}s")
+
+        # Need To Change
+        model.eval()
+        model_script = torch.jit.trace(model, images)
+        torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\Fast-Scnn\\{epoch}_weight_none.pth", _extra_files=extra_files)
+
+
+def iou(pred, target, label_nums):
+    
     pred = torch.argmax(pred, 1)
     pred = pred.cpu().data.numpy().reshape(-1)
     target = target.cpu().data.numpy().reshape(-1)
-    return jsc(pred,target, average=None)
+    score = jaccard_score(y_true=target, y_pred=pred, labels=[x for x in range(0, label_nums)], average='macro')
+
+    return score 
+
 
 class FastSCNN(nn.Module):
     def __init__(self, num_classes, aux=False, **kwargs):
@@ -372,9 +466,10 @@ class SegmentationDataset(data.Dataset):
         assert (len(self.image_path_list) == len(self.mask_path_list))
 
         self.label_info = label_info
-        self._key= np.full(max(self.label_info.values())+2, -1)
-        for label, pixel in label_info.items():
-            self._key[pixel+1] = label
+        self._key= np.full(max(self.label_info)+2, -1)
+
+        for i, label in enumerate(label_info):
+            self._key[label+1] = i
 
         self._mapping = np.array(range(-1, len(self._key) - 1)).astype('int32')
 
@@ -398,99 +493,6 @@ class SegmentationDataset(data.Dataset):
     def __len__(self):
         return len(self.image_path_list)
 
-
-def Trainer(**kwargs):
-
-    if kwargs['hyperparameter']['using_gpu'] and not torch.cuda.is_available():
-        raise Exception("GPU is not avaiable")
-
-    hyperparameter = kwargs['hyperparameter']
-    device = 'cuda' if kwargs['hyperparameter']['using_gpu'] else 'cpu'
-
-    logger.info("Temp Folder Create")
-    # local_download_path = os.path.join(f"/temp/{uuid.uuid4()}")
-    # train_path_list, valid_path_list = download_image(local_download_path,
-    #                                                 hyperparameter['train_ratio'],
-    #                                                 hyperparameter['input_size'],
-    #                                                 hyperparameter['random_crop_base_size'])
-
-    # Need To Remove
-    train_path_list = download_image2()
-
-    # Need To Change
-    # class, Pixel
-    label_info = {
-        0 : 0,
-        1 : 255
-    }
-    train_dataset = SegmentationDataset(data_path_list=train_path_list,
-                                        label_info=label_info)
-
-    train_loader = data.DataLoader(dataset=train_dataset,
-                                        batch_size=hyperparameter['batch_size'],
-                                        shuffle=False,
-                                        drop_last=True,
-                                        num_workers=0)
-
-    model = FastSCNN(num_classes=len(label_info)).to(device)
-
-    loss_weight = hyperparameter['loss_weight']
-    if loss_weight:
-        loss_weight = torch.FloatTensor(loss_weight)
-
-    criterion = torch.nn.CrossEntropyLoss(ignore_index=-1, weight=loss_weight).to(device)
-
-    optimizer = torch.optim.SGD(model.parameters(),
-                                lr=hyperparameter['lr'],
-                                momentum=hyperparameter['momentum'] ,
-                                weight_decay=hyperparameter['weight_decay'])
-
-    scheduler = MultiStepLR(optimizer, milestones=hyperparameter['milestones'], gamma=hyperparameter['gamma'])
-
-    extra_files = dict()
-    extra_files['label_info'] = json.dumps(label_info)
-    
-    print('Training Start')
-    total_iteration = len(train_loader)
-    train_loss_list = list()
-
-    for epoch in range(1, hyperparameter['epoch']+1):
-        epoch_start_time = time.time()
-        model.train()
-
-        train_epoch_loss = 0.0
-
-        iteration_start_time = time.time()
-        for n_count, (images, targets) in enumerate(train_loader, 1):
-            images = images.to(device)
-            targets = targets.to(device)
-
-            with torch.cuda.amp.autocast(enabled=hyperparameter['using_amp']):
-                outputs = model(images)
-                loss = criterion(outputs[0], targets)
-
-            temp = iou(outputs[0], targets)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            scheduler.step(epoch)
-
-            train_epoch_loss += loss.item()
-            if n_count % (total_iteration // 10) == 0 or n_count == total_iteration:
-                iteration_elapsed_time = time.time() - iteration_start_time
-                logger.info(f"Epoch:[{epoch:4d}/{hyperparameter['epoch']:4d}], Iter: [{n_count:4d}/{total_iteration:4d}], loss: {loss.item():4.4f}, Time: {iteration_elapsed_time:4.2f}s")
-                iteration_start_time = time.time()
-
-        train_loss_list.append(train_epoch_loss/n_count)
-
-        epoch_elapsed_time = time.time() - epoch_start_time
-        logger.info(f"Epoch:[{epoch:4d}/{hyperparameter['epoch']:4d}], loss: {train_epoch_loss/n_count:4.4f}, Time: {epoch_elapsed_time:4.2f}s")
-
-        # Need To Change
-        model.eval()
-        model_script = torch.jit.trace(model, images)
-        torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\Fast-Scnn\\{epoch}_weight_none.pth", _extra_files=extra_files)
 
 
 if __name__ == '__main__':
