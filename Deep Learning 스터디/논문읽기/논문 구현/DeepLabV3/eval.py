@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torchvision import transforms
 
-iter = 4100
+iter = 7
 
 def eval(image_path):
     model = torch.jit.load(f"D:\\Model_Inference\\save_model\\DeeplabV3\\{iter}.pth", map_location='cpu').eval()

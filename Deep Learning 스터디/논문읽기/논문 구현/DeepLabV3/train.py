@@ -24,15 +24,12 @@ parameters = '''{
         "separable_conv" : false,       
         "output_stride" : 16,
         "using_amp": false,
-
-
         "train_ratio" : 0.9,
         "validation_save_count" : 10,
         "validation_save_random" : false
     }
 }
 '''
-
 
 logger = logging.getLogger('workflow')
 logger.setLevel(logging.INFO)
@@ -84,6 +81,10 @@ def train(**kwargs):
     print("Train Start")
     train_loss_list = list()
 
+    inference_info = dict()
+    inference_info['inference_info'] = json.dumps({"label_info": label_info})
+
+
     for epoch in range(1, hyperparameter['epoch']):
         epoch_start_time = time.time()
         train_epoch_loss = 0.0
@@ -116,7 +117,7 @@ def train(**kwargs):
         if epoch % hyperparameter['save_model_epoch'] == 0 or epoch == hyperparameter['epoch']:
             model.eval()
             model_script = torch.jit.trace(model, images)
-            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\DeeplabV3\\{epoch}.pth")
+            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\DeeplabV3\\{epoch}.pth", _extra_files=inference_info)
             model.train()
 
         if valid_flag:
