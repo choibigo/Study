@@ -1,19 +1,14 @@
-def solution(target_list):
-    
-    target_list = target_list[1:-1]
-    target_list = target_list.replace(",{", "")
-    target_list = target_list.replace("{", "")
-    target_list = target_list.split("}")
-    target_list = sorted(target_list, key = lambda x : len(x))
+def solution(s):
+    s = s[2:-2].split("},{")
+    s = sorted(s, key = lambda x: len(x))
     
     answer = list()
-    
-    for target in target_list[1:]:
-        temp = target.split(",")
+    for t in s:
+        for a in t.split(","):
+            if int(a) not in answer:
+                answer.append(int(a))
+                break
         
-        for t in temp:
-            if int(t) not in answer:
-                answer.append(int(t))
-        
-    
+
     return answer
+    

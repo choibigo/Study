@@ -1,14 +1,6 @@
 from collections import Counter
 
-def set_create(target_str):
-    result = list()
-    for i in range(len(target_str)-1):
-        if target_str[i].isalpha() and target_str[i+1].isalpha():
-            result.append(target_str[i].lower()+target_str[i+1].lower())
-
-    return result
-
-def Jacard(set1, set2):
+def jacard(set1, set2):
     
     count1 = Counter(set1)
     count2 = Counter(set2)
@@ -21,10 +13,12 @@ def Jacard(set1, set2):
     
     return (len(inter)/len(union))
     
-    
-def solution(str1, str2):
 
-    set1 = set_create(str1)
-    set2 = set_create(str2)
+def solution(str1, str2):
     
-    return int(Jacard(set1, set2)*65536)
+    str1 = [(str1[i]+str1[i+1]).lower() for i in range(len(str1)-1) if str1[i].isalpha() and str1[i+1].isalpha()]
+    str2 = [(str2[i]+str2[i+1]).lower() for i in range(len(str2)-1) if str2[i].isalpha() and str2[i+1].isalpha()]
+
+    return int(jacard(str1, str2)*65536)
+        
+    
