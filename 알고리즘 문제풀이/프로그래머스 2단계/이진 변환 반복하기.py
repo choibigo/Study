@@ -1,24 +1,19 @@
-def my_bin(num):
-    if num // 2 == 0:
-        return str(num%2)
+def two_num(n):
+    if n <2:
+        return str(n)
     
-    return my_bin(num//2) + str(num%2)
+    return two_num(n//2)+str(n%2)
 
-def solution(s):
+def solution(target):
     
-    total_zero_count = 0
-    count = 0
-    while True:
+    answer = [0,0]
+    zero_count = target.count("0")
+
+    while target != "1":
+        zero_count = target.count("0")
+        answer[1] += zero_count
         
-        if s == "1":
-            break
-        
-        zero_count = s.count("0")
-        total_zero_count+= zero_count
-        
-        zero_remove_len = len(s.replace("0",""))
-        s = str(my_bin(zero_remove_len))
+        target = two_num(len(target)-zero_count)
+        answer[0] += 1
     
-        count +=1
-    
-    return [count, total_zero_count]
+    return answer

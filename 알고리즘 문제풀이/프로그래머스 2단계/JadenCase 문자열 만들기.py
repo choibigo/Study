@@ -1,10 +1,10 @@
-def solution(s):
+def solution(s_list):
     
-    split_s_list = s.split(" ")
-    
-    for i in range(len(split_s_list)):
-        if len(split_s_list[i]) != 0:
-            split_s_list[i] = split_s_list[i][0].upper()+split_s_list[i][1:].lower()
+    answer = list()
+    for s in s_list.split(" "):
+        if len(s) != 0:
+            answer.append(s[0].upper()+s[1:].lower())
+            
+    return " ".join(answer)
 
-        
-    return " ".join(split_s_list)
+    

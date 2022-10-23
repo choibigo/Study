@@ -1,18 +1,20 @@
-def solution(s):
-    
-    stack_list = list()
-    
-    for bracket in s:
-        if bracket =="(":
-            stack_list.append(bracket)
-        
-        elif bracket == ")":
-            
-            try:
-                stack_list.pop()
-            except:
-                return False
-                
+def solution(bracket_list):
 
-    return len(stack_list) == 0
+    stack = list()
     
+    for b in bracket_list:
+        if b == "(":
+            stack.append("(")
+        else:
+            if len(stack) == 0:
+                return False
+            else:
+                if stack[-1] =="(":
+                    stack.pop()
+                else:
+                    return False
+                
+    if len(stack) == 0:
+        return True
+    else:
+        return False

@@ -1,10 +1,7 @@
 def solution(n):
-    count = 0
-    while n != 0:
-        if n % 2 == 0:
-            n /= 2
-        else:
-            n -= 1
-            count +=1
+    battery = 0
+    while n:
+        battery += n%2
+        n //=2
     
-    return count
+    return battery

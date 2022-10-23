@@ -1,11 +1,13 @@
-def my_bin(n):
-    if n // 2 == 0:
-        return str(n%2)
-    
-    return my_bin(n//2)+str(n%2)
+def my_two(n):
+    if n<2:
+        return str(n)
+    return my_two(n//2) + str(n%2) 
 
 def solution(n):
-    c = my_bin(n).count('1')
-    for m in range(n+1,1000001):
-        if my_bin(m).count('1') == c:
-            return m
+    one_count = my_two(n).count("1")
+    
+    while True:
+        n = n+1
+        i_two = my_two(n)
+        if i_two.count("1") == one_count:
+            return n
