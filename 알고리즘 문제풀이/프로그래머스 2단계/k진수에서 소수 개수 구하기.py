@@ -1,29 +1,20 @@
-def k_num_trase(num, k):
-    if num < k :
+def k_num(num, k):
+    if num<k:
         return str(num)
     
-    return k_num_trase(num//k, k) + str(num%k)
+    return k_num(num//k, k) + str(num%k)
 
-def prime(num):
-    
-    if num == 1:
+def is_prime(num):
+    if num==1:
         return False
     
-    for i in range(2, int(num**(1/2))+1):
+    for i in range(2, int(num**0.5)+1):
         if num%i == 0:
             return False
-        
+    
     return True
 
-def solution(n, k):
+def solution(num, k):
+
+    return sum([1 for n in k_num(num, k).split("0") if len(n) and is_prime(int(n))]) 
     
-    k_num = k_num_trase(n, k)
-    temp = k_num.split("0")
-    
-    answer = 0
-    for num in temp:
-        if len(num) != 0:
-            if prime(int(num)):
-                answer +=1
-    
-    return answer
