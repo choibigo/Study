@@ -1,20 +1,15 @@
-from itertools import permutations
-
 def solution(k, dungeons):
-    
-    dungeons_count = len(dungeons)
+    check = [False] * len(dungeons)
     answer = 0
-    
-    for courses in list(permutations(dungeons, dungeons_count)):
-        temp_k = k
-        count = 0
-        for need, consum in courses:
-            if need <= temp_k:
-                temp_k -= consum
-                count +=1
-                answer = max(answer, count)
-            else:
-                answer = max(answer, count)
-                break
+    def DFS(next_k, count):
+        nonlocal answer
+        answer = max(count, answer)
+        for i in range(len(dungeons)):
+            if check[i] == False and next_k >= dungeons[i][0]:
+                check[i] = True
+                DFS(next_k-dungeons[i][1], count+1)
+                check[i] = False
                 
+    DFS(k, 0)
+
     return answer

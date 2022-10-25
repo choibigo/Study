@@ -1,45 +1,35 @@
-from collections import defaultdict
 import math
 
-def time_to_minute(time_string):
-    hour, minute = time_string.split(":")
-    hour = int(hour)
-    minute = int(minute)
-    
-    return hour*60 + minute
+def time_to_miniute(time):
+    hour, miniute = time.split(":")
+    return int(hour)*60+int(miniute)
 
 def solution(fees, records):
+    basic_time, basic_fee, per_time, per_fee = fees
     
-    fees = list(map(int, fees))
-    time_basic, fee_basic, time_per, fee_per = fees
+    time_info = dict()
+    status_info = dict()
     
-    car_in_time_list = dict()
-    car_use_time_list = defaultdict(int)
-    
-    for record in records:
-        time, car_num, op = record.split(" ")
+    for r in records:
+        time, number, act = r.split(" ")
+        
+        if act == "IN":
+            status_info[number] = time_to_miniute(time)
+        elif act == "OUT":
+            time_info[number] = time_info.get(number, 0) + time_to_miniute(time) - status_info[number]
+            del status_info[number]
 
-        if op == "IN":
-            car_in_time_list[car_num] = time_to_minute(time)
-            
-        elif op == "OUT":
-            car_in_time = car_in_time_list.pop(car_num)
-            car_use_time_list[car_num] += time_to_minute(time) - car_in_time
-
-    for car_num, in_time in car_in_time_list.items():
-        car_use_time_list[car_num] += time_to_minute("23:59") - in_time
-    
-    car_use_time_list = sorted(car_use_time_list.items(), key = lambda item : item[0])
+    for number in status_info.keys():
+        time_info[number] = time_info.get(number, 0) + time_to_miniute("23:59") - status_info[number]
     
     answer = list()
-    
-    for car_num, time in car_use_time_list:
-        time = int(time)
-        
-        if time <= time_basic:
-            answer.append(fee_basic)
+    time_info = sorted(time_info.items(), key = lambda x: x[0])
+    for _, time in time_info:
+        if time<=basic_time:
+            fee = basic_fee
         else:
-            temp = fee_basic + math.ceil((time - time_basic)/time_per) * fee_per 
-            answer.append(int(temp))
+            fee = basic_fee + math.ceil((time-basic_time)/per_time) * per_fee
+        answer.append(fee)
         
     return answer
+
