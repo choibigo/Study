@@ -17,3 +17,24 @@ def solution(skill, skill_trees):
             
     
     return count
+
+
+
+
+def solution(skill, skill_trees):
+    
+    skill = list(skill)
+    count = 0
+    
+    for tree in skill_trees:
+        temp_skill = skill[:]
+        
+        for t in tree:
+            if temp_skill and t == temp_skill[0]:
+                temp_skill.pop(0)
+            
+            if t in temp_skill:
+                count+=1
+                break
+    
+    return len(skill_trees) - count

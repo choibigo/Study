@@ -43,37 +43,28 @@ def solution(n, computers):
 # endregion
 
 # region DFS
-def make_graph(n, matrix):
-    
-    graph = [[] for _ in range(n)]
-    for start in range(n):
-        for end in range(n):
-            if start == end:
-                continue
-            
-            if matrix[start][end] == 1:
-                graph[start].append(end)
-    
-    return graph
-
-def DFS(v, graph, visited):
-    for g in graph[v]:
-        if visited[g] == False:
-            visited[g] = True
-            DFS(g, graph, visited)
-
 def solution(n, computers):
-    
-    graph = make_graph(n, computers)
-    visited = [False] * n
 
-    count = 0
+    graph = [[] for _ in range(n)]
+    check = [False for _ in range(n)]
+    for start in range(n):
+        for end in range(start+1, n):
+            if computers[start][end]:
+                graph[start].append(end)
+                graph[end].append(start)
     
+    def DFS(v, check):
+        check[v] = True
+        for g in graph[v]:
+            if not check[g]:
+                check[g] = True
+                DFS(g, check)
+    
+    count = 0
     for i in range(n):
-        if visited[i] == False:
-            visited[i] = True
+        if not check[i]:
             count +=1
-            DFS(i, graph, visited)
+            DFS(i, check)
             
     return count
 # endregion

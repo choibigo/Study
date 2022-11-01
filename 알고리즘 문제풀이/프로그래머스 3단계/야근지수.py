@@ -1,17 +1,14 @@
 import heapq
 
 def solution(n, works):
-    if sum(works) <= n : return 0
-
     works = list(map(lambda x : -x, works))
     heapq.heapify(works)
     
-    for _ in range(n):
-        temp = heapq.heappop(works)
-        heapq.heappush(works, temp+1)
+    while works and n:
+        pop_num = heapq.heappop(works)
         
-    result = 0
-    for work in works:
-        result += (work**2)
+        if pop_num+1 != 0:
+            heapq.heappush(works, pop_num+1)
+        n-=1
     
-    return result
+    return sum(list(map(lambda x : x**2, works))) if len(works) else 0
