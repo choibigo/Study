@@ -1,8 +1,13 @@
 def solution(land):
     
+    res = [[0 for _ in range(len(land[0]))] for _ in range(len(land))]
+    res[0] = land[0][:]
     
     for row in range(1, len(land)):
         for col in range(len(land[0])):
-            land[row][col] = max(land[row-1][:col]+land[row-1][col+1:]) + land[row][col]
+            temp = res[row-1][:]
+            temp[col] = -1
+            res[row][col] = max(temp)+land[row][col]
     
-    return max(land[-1])
+    
+    return max(res[-1])
