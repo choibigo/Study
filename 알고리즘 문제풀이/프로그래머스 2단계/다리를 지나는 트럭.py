@@ -12,12 +12,9 @@ def solution(bridge_length, weight, wait_truck):
         
         if wait_truck and sum_weight+wait_truck[0] <= weight:
             truck = wait_truck.pop(0)
-            ing_truck.append([truck, 0])
+            ing_truck.append([truck, time])
             sum_weight += truck
         
-        for i in range(len(ing_truck)):
-            ing_truck[i][1] += 1
-            
         time+=1
         
     return time
