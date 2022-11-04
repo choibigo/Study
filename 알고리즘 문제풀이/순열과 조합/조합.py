@@ -1,22 +1,19 @@
 import input_setting
 
 num, count = map(int, input().split())
-flag = 2
+flag = 1
 
 if flag == 1:
     
-    def DFS(v, s, num, count):
-
+    def DFS(v, s, res):
         if v == count:
-            print(*res)
-    
-        for i in range(s, num):
-            res.append(i+1)
-            DFS(v+1, i+1, num, count)
-            res.pop()
+            print(res)
+            return
+        
+        for i in range(s, num+1):
+            DFS(v+1, i+1, res+[i])
 
-    res = list()
-    DFS(0, 0, num, count)
+    DFS(0,1,[])
 
 elif flag == 2:
     from itertools import combinations

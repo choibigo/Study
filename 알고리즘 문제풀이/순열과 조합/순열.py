@@ -1,28 +1,24 @@
 import input_setting
 
-flag = 2
+flag = 1
 num, count = map(int, input().split())
 
 if flag == 1:
-    def DFS(v, num, count):
-
+    pass
+    check = [False]*(num+1)
+    def DFS(v, res):
         if v == count:
             print(*res)
-            return
+            return 
         
-        for i in range(num):
-            if check[i] == False:
+        for i in range(1, num+1):
+            if not check[i]:
                 check[i] = True
-                res.append(i+1)
-                
-                DFS(v+1, num, count)
-
+                DFS(v+1, res+[i])
                 check[i] = False
-                res.pop()
 
-    res = list()
-    check = [False] * num
-    DFS(0, num, count)
+    DFS(0, [])
+
 elif flag == 2:
     from itertools import permutations
 

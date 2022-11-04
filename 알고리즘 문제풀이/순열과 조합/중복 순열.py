@@ -2,23 +2,19 @@ import input_setting
 
 num, count = map(int, input().split())
 
-flag = 2
+flag = 1
 
 if flag == 1:
     
-    def DFS(v, num, count):
-        
+    def DFS(v, res):
         if v == count:
-            print(*res)
+            print(res)
             return 
         
-        for i in range(num):
-            res.append(i+1)
-            DFS(v+1, num, count)
-            res.pop()
+        for i in range(1, num+1):
+            DFS(v+1, res+[i])
 
-    res = list()
-    DFS(0, num, count)
+    DFS(0, [])
 
 elif flag == 2:
     
