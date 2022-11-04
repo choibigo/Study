@@ -1,23 +1,18 @@
 def solution(genres, plays):
-    
-    music = dict()
-    plays_sum = dict()
-    
-    for i, (g, p) in enumerate(zip(genres, plays)):
-        
-        if g not in plays_sum:
-            plays_sum[g] = p
+
+    genre_info = dict()
+    for idx, (genre, play) in enumerate(zip(genres, plays)):
+        if genre in genre_info:
+            genre_info[genre]['sum'] += play
+            genre_info[genre]['play'].append([idx, play])
         else:
-            plays_sum[g] +=p
-            
-        if g not in music:
-            music[g] = [[p, i]]
-        else:
-            music[g].append([p,i])
+            genre_info[genre] = {"sum":play, "play":[[idx, play]]}
+    
+    genre_info = sorted(genre_info.items(), key = lambda x : -x[1]['sum'] )
     
     answer = list()
-    for g, _ in sorted(plays_sum.items(), key = lambda x : -x[1]):
-        for p, i in sorted(music[g], key = lambda x : (-x[0], x[1]))[:2]:
-            answer.append(i)
-    
+    for key, genre_play in genre_info:
+        plays = sorted(genre_play['play'], key = lambda x : (-x[1], x[0]))
+        answer += [p for p, _ in plays[:2]]
+        
     return answer

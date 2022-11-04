@@ -14,11 +14,12 @@ from scipy.ndimage import convolve
 import h5py
 import json
 import logging
+import pickle
 
 ##$--
 parameters = '''{
     "hyperparameter":{
-        "epoch": 10,
+        "epoch": 300,
         "save_model_epoch":1,
         "batch_size": 2,
         "lr": 0.00001,
@@ -48,9 +49,11 @@ def RecipeRun(**kwargs):
     device = 'cuda' if kwargs['hyperparameter']['using_gpu'] else 'cpu'
 
     # Need To Remove
-    data_dir = 'D:\\workspace\\data\\img_align_celeba_256\\img_align_celeba_256.bk\\'
-    # data_dir = 'D:\\workspace\\data\\super_resolution_patch\\'
+    # data_dir = 'D:\\workspace\\data\\img_align_celeba_256\\img_align_celeba_256.bk\\'
+    data_dir = 'D:\\workspace\\data\\super_resolution_patch\\'
     dataset = SuperResolutionDataset(data_dir, hyperparameter['image_size'], hyperparameter['scale_factor'])
+    kernel = pickle.dumps(dataset.get_kernel())
+
     data_loader = data.DataLoader(dataset=dataset,
                                   batch_size=hyperparameter['batch_size'],
                                   shuffle=True,
@@ -59,6 +62,9 @@ def RecipeRun(**kwargs):
 
     model = SRMD(hyperparameter['num_blocks'], hyperparameter['conv_dim'], hyperparameter['scale_factor']).to(device)
     optimizer = torch.optim.Adam(model.parameters(), hyperparameter['lr'], [0.5, 0.999])
+
+    
+
 
     criterion = nn.MSELoss()
     for epoch in range(1, hyperparameter['epoch']+1):
@@ -84,17 +90,14 @@ def RecipeRun(**kwargs):
                 tmp = nn.Upsample(scale_factor=hyperparameter['scale_factor'])(x.data[:,0:3,:])
                 pairs = torch.cat((tmp.data[0:2,:], reconst.data[0:2,:], y.data[0:2,:]), dim=3)
                 grid = make_grid(pairs, 2)
-                from PIL import Image
                 tmp = np.squeeze(grid.data.cpu().data.numpy().transpose((1, 2, 0)))
                 tmp = (255 * tmp).astype(np.uint8)
                 Image.fromarray(tmp).save(f'D:\\Model_Inference\\inference\\SRMD\\{epoch}_{n_count}.png')
 
-            
-
         logger.info("[{}/{}] loss: {:.4f}".format(epoch+1, hyperparameter['epoch'], loss.item()))
         if epoch % hyperparameter['save_model_epoch'] == 0:
             model_script = torch.jit.trace(model, x)
-            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\srmd\\{epoch}.pth")
+            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\srmd\\{epoch}.pth", _extra_files={"kernel":kernel})
 
 
 class Kernels(object):
@@ -160,7 +163,7 @@ class SuperResolutionDataset(data.Dataset):
         self.scale_factor = scale_factor
         K, P = self.__load_kernels(file_path='kernels/', scale_factor=self.scale_factor)
         self.randkern = Kernels(K, P)
-
+        
     def __getitem__(self, index):
         image_path = self.image_paths[index]
         image = Image.open(image_path).convert('RGB')
@@ -209,6 +212,8 @@ class SuperResolutionDataset(data.Dataset):
 
         return K, P
 
+    def get_kernel(self):
+        return self.randkern
 
 class SRMD(nn.Module):
     def __init__(self, num_blocks=11, conv_dim=128, scale_factor=1, num_channels=18):

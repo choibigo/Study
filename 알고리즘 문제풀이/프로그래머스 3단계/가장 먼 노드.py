@@ -1,23 +1,24 @@
-def solution(n, vertex):
-    
+from collections import deque
+
+def solution(n, edge):
     graph = [[] for _ in range(n+1)]
     
-    for a,b in vertex:
+    for a, b in edge:
         graph[a].append(b)
         graph[b].append(a)
     
-    count_list = [-1] * (n+1)
-    visited = [False] * (n+1)
-    visited[1] = True
-    nodes = [(1,0)]
+    res = [-1 for _ in range(n+1)]
+    res[1] = 0
+    nodes = deque()
+    nodes.append([1, 0])
     
     while nodes:
-        pop_node, pop_count = nodes.pop(0)
+        v, count = nodes.popleft()
         
-        for g in graph[pop_node]:
-            if visited[g] == False:
-                visited[g] = True
-                nodes.append((g, pop_count+1))
-                count_list[g] = pop_count+1
-                
-    return count_list.count(max(count_list))
+        for g in graph[v]:
+            if res[g] == -1:
+                res[g] = count+1
+                nodes.append([g, count+1])
+    
+    return res.count(max(res))
+    
