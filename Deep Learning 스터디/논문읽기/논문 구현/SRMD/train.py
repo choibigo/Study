@@ -11,10 +11,10 @@ import numpy as np
 from torchvision import transforms
 from torch.utils import data
 from scipy.ndimage import convolve
-import h5py
 import json
 import logging
 import pickle
+import mat_kernel
 
 ##$--
 parameters = '''{
@@ -62,11 +62,9 @@ def RecipeRun(**kwargs):
 
     model = SRMD(hyperparameter['num_blocks'], hyperparameter['conv_dim'], hyperparameter['scale_factor']).to(device)
     optimizer = torch.optim.Adam(model.parameters(), hyperparameter['lr'], [0.5, 0.999])
-
-    
-
-
     criterion = nn.MSELoss()
+
+    inference_info = {"inference_info": kernel}
     for epoch in range(1, hyperparameter['epoch']+1):
         for n_count, (x, y) in enumerate(data_loader):
             model.train()
@@ -97,7 +95,7 @@ def RecipeRun(**kwargs):
         logger.info("[{}/{}] loss: {:.4f}".format(epoch+1, hyperparameter['epoch'], loss.item()))
         if epoch % hyperparameter['save_model_epoch'] == 0:
             model_script = torch.jit.trace(model, x)
-            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\srmd\\{epoch}.pth", _extra_files={"kernel":kernel})
+            torch.jit.save(model_script, f"D:\\Model_Inference\\save_model\\srmd_inference_info\\{epoch}.pth", _extra_files=inference_info)
 
 
 class Kernels(object):
@@ -161,7 +159,8 @@ class SuperResolutionDataset(data.Dataset):
 
         self.image_size = image_size
         self.scale_factor = scale_factor
-        K, P = self.__load_kernels(file_path='kernels/', scale_factor=self.scale_factor)
+        K, P = mat_kernel.load(scale_factor=self.scale_factor)
+
         self.randkern = Kernels(K, P)
         
     def __getitem__(self, index):
@@ -190,27 +189,6 @@ class SuperResolutionDataset(data.Dataset):
     def __scaling(self, image):
         return np.array(image) / 255.0
 
-    def __load_kernels(self, file_path='kernels/', scale_factor=2):
-        f = h5py.File(os.path.join(file_path, 'SRMDNFx%d.mat' % scale_factor), 'r')
-
-        directKernel = None
-        if scale_factor != 4:
-            directKernel = f['net/meta/directKernel']
-            directKernel = np.array(directKernel).transpose(3, 2, 1, 0)
-
-        AtrpGaussianKernels = f['net/meta/AtrpGaussianKernel']
-        AtrpGaussianKernels = np.array(AtrpGaussianKernels).transpose(3, 2, 1, 0)
-
-        P = f['net/meta/P']
-        P = np.array(P)
-        P = P.T
-
-        if directKernel is not None:
-            K = np.concatenate((directKernel, AtrpGaussianKernels), axis=-1)
-        else:
-            K = AtrpGaussianKernels
-
-        return K, P
 
     def get_kernel(self):
         return self.randkern
