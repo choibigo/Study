@@ -1,24 +1,19 @@
-def dp(sticker):
-    res = [0] * len(sticker)
-    res[0] = sticker[0]
-    res[1] = max(sticker[0], sticker[1])
-
-    for i in range(2, len(sticker)-1):
-        res[i] = max(res[i-1], res[i-2]+sticker[i])
-    
-    return max(res)
-    
-
 def solution(sticker):
-
-    if len(sticker) == 1:
+    
+    len_sticker = len(sticker)
+    if len_sticker == 1:
         return sticker[0]
-    
-    a = dp(sticker)
-    
-    sticker = sticker[1:] + [sticker[0]]
-    b = dp(sticker)
-    
-    return max(a, b)
-    
-    
+
+    res1 = [0] * len_sticker
+    res1[0] = sticker[0]
+    res1[1] = sticker[0]
+    for i in range(2, len_sticker-1):
+        res1[i] = max(res1[i-1], res1[i-2]+sticker[i])
+
+    res2 = [0] * len_sticker
+    res2[1] = sticker[1]
+
+    for i in range(2, len_sticker):
+        res2[i] = max(res2[i-1], res2[i-2]+sticker[i])
+
+    return max(max(res1), max(res2))
