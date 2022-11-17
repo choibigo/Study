@@ -99,7 +99,11 @@ def TrainRun(**kwargs):
 
             if n_count%10 ==0:
                 print(f"Epoch: {epoch}, Iter: {n_count}, {model.loss_G}")
-
+                model.loss_cycle_A
+                model.loss_G_A
+                model.loss_cycle_B
+                model.loss_G_B
+                model.loss_G
                 if valid_flag:
                     with torch.no_grad():
                         model.netG_A.eval()
@@ -113,7 +117,7 @@ def TrainRun(**kwargs):
 
                             fake_b = fake_b.to('cpu')
                             fake_b = fake_b.detach().cpu().data.numpy()
-                            save_image = fake_b[0]
+                            save_image = fake_b[0]  
                             save_image = save_image.transpose(1,2,0)
                             min_value =  np.min(save_image)
                             max_value =  np.max(save_image)
