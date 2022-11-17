@@ -1,20 +1,6 @@
 def solution(s):
-    size = len(s)
-    answer = 0
-    
-    for left in range(size):
-        for right in range(size-1, -1, -1):
-            
-            if right < left:
-                break
-            
-            if s[left] != s[right]:
-                continue
-            
-            if s[left:right+1] == s[left:right+1][::-1]:
-                if answer < right-left:
-                    answer = right-left
-                
-                
-
-    return answer +1
+    for size in range(len(s), 0, -1):
+        for i in range(len(s)-size+1):
+            if s[i:i+size] == s[i:i+size][::-1]:
+                return size
+        
