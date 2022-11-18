@@ -1,25 +1,20 @@
-def solution(word):
-
+def solution(target_word):
     
     alpha = ['A', 'E', 'I', 'O', 'U']
-    total_list = list()
-    res = list()
     
-    def DFS(v):
+    count = 0
+    answer = 0
+    def DFS(word):
+        nonlocal count,answer
+        if word == target_word:
+            answer = count
+            return        
+        count +=1
+        if len(word) == 5:
+            return
         
-        if v <= len(alpha):
-            total_list.append("".join(res))
-
-            if v == len(alpha):
-                return
-            
         for a in alpha:
-            res.append(a)
-            DFS(v+1)
-            res.pop()
-    
-    DFS(0)
-    total_list.sort()
-    
-    return total_list.index(word)
-    
+            DFS(word+a)
+            
+    DFS("")
+    return answer
