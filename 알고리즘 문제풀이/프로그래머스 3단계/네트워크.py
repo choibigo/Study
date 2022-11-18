@@ -2,42 +2,23 @@
 # region BFS
 from collections import deque
 
-def make_graph(n, matrix):
-    
-    graph = [[] for _ in range(n)]
-    for start in range(n):
-        for end in range(n):
-            if start == end:
-                continue
-            
-            if matrix[start][end] == 1:
-                graph[start].append(end)
-    
-    return graph
-
-
 def solution(n, computers):
-    
-    graph = make_graph(n, computers)
-    
-    nodes = deque()
-    visited = [False] * n
 
+    res = [False]*(n)
     count = 0
     
     for i in range(n):
-        if visited[i] ==  False:
-            nodes.append(i)
-            visited[0] = True
+        if not res[i]:
             count += 1
-            
-            while nodes:
-                pop_node = nodes.popleft()
+            res[i] = True
 
-                for g in graph[pop_node]:
-                    if visited[g] == False:
-                        visited[g] = True
-                        nodes.append(g)
+            nodes = deque([i])
+            while nodes:
+                v = nodes.popleft()
+                for vi in range(n):
+                    if v != vi and computers[v][vi] and not res[vi]:
+                        res[vi] = True
+                        nodes.append(vi)
     
     return count
 # endregion
