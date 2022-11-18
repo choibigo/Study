@@ -1,5 +1,5 @@
 input.txt
 *.pyc
-/Deep Learning 스터디/data
 *.zip
 *.pth
+/data
