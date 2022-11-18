@@ -1,19 +1,12 @@
 def solution(number, k):
+    stack = [number[0]]
+    for pop_num in number[1:]:
+        while stack and k and stack[-1] < pop_num:
+            k-=1
+            stack.pop()
+        stack.append(pop_num)
     
-    numbers = list(map(int, list(number)))
+    if k:
+        stack = stack[:-k]
     
-    count = k
-    stack_list = [numbers[0]]
-    
-    for num in numbers[1:]:
-        while len(stack_list) and stack_list[-1] < num and count != 0:
-            stack_list.pop()
-            count -= 1
-
-        stack_list.append(num)
-    
-    if count == 0:
-        return "".join(list(map(str, stack_list)))
-    else:
-        return "".join(list(map(str, stack_list[:-count])))    
-    
+    return "".join(stack)
