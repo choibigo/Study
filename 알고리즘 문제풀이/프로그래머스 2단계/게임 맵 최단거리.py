@@ -17,7 +17,6 @@ def solution(maps):
         x, y = nodes.popleft()
         
         if x == cols-1 and y == rows-1:
-            print(*res, sep="\n")
             return res[rows-1][cols-1]
         
         for move in move_list:
@@ -29,6 +28,4 @@ def solution(maps):
                     maps[ny][nx] = 0
                     res[ny][nx] = res[y][x] + 1
                     nodes.append([nx, ny])
-    
-    
     return -1

@@ -1,24 +1,20 @@
 def solution(files):
-    
-    file_dict = list()
-    
+
+    info = list()
     for file in files:
-        
         number = ""
         head = ""
-        for i, c in enumerate(file):
-            if c.isdigit():
-                number+=c
+        tail = ""
+        for i in range(len(file)):
+            if len(number) and not file[i].isdigit():
+                tail = file[i:]
+                break
+            elif file[i].isdigit():
+                number += file[i]
             else:
-                if number == "":
-                    head += c
-                else:
-                    file_dict.append([head, number, file])
-                    break
-
-            if i== len(file)-1:
-                file_dict.append([head, number, file])
-
-    file_dict = sorted(file_dict, key = lambda x : (x[0].lower(), int(x[1]) ))
+                head += file[i]
     
-    return [file_name for _,_,file_name in file_dict]
+        info.append([head, number, tail])
+        
+    info = sorted(info, key=lambda x: (x[0].lower(), int(x[1])))
+    return list(map(lambda x : "".join(x), info))
