@@ -1,31 +1,25 @@
 def solution(n):
-    res = [[0 for _ in range(i)] for i in range(1, n+1)]
+
+    result = [[0 for _ in range(i+1)] for i in range(n)]
     
-    pos = (0,-1)
-    num = 1
+    move_info = dict()
+    move_info[0] = (0, 1)
+    move_info[1] = (1, 0)
+    move_info[2] = (-1, -1)
     
-    temp_n = n
+    pos = [0,-1]
+    num = 0
+    
     for i in range(n):
-        for j in range(temp_n):
-            if i%3 == 0:
-                nx = pos[0]
-                ny = pos[1]+1
-            elif i%3 == 1:
-                nx = pos[0]+1
-                ny = pos[1]
-            elif i%3 == 2:
-                nx = pos[0]-1
-                ny = pos[1]-1
-            
-            res[ny][nx] = num
+        for _ in range(n-i):
+            nx = pos[0] + move_info[i%3][0]
+            ny = pos[1] + move_info[i%3][1]
+            pos = [nx, ny]
             num+=1
-            pos = (nx, ny)
-            
-        temp_n -=1
-    
+            result[ny][nx] = num
+
     answer = list()
-    for res_row in res:
-        answer.extend(res_row)
-    
-    
+    for row in result:
+        answer += row
+        
     return answer
