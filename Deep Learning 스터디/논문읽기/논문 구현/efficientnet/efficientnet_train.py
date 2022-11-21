@@ -44,7 +44,7 @@ def RecipeRun(parameter):
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                         download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=parameter['batch_size'],
-                                            shuffle=True, num_workers=4, drop_last=True)
+                                            shuffle=True, num_workers=0, drop_last=True)
 
     model = EfficientNet.from_name('efficientnet-b0')
 
