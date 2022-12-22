@@ -51,18 +51,13 @@ def Trainer(**kwargs):
     device = 'cuda' if kwargs['hyperparameter']['using_gpu'] else 'cpu'
 
     logger.info("Temp Folder Create")
-    # local_download_path = os.path.join(f"/temp/{uuid.uuid4()}")
-    # train_path_list, valid_path_list = download_image(local_download_path,
-    #                                                 hyperparameter['train_ratio'],
-    #                                                 hyperparameter['input_size'],
-    #                                                 hyperparameter['random_crop_base_size'])
 
     # Need To Remove
     train_path_list = download_image2()
 
     # Need To Change
     # class, Pixel
-    label_info = [0,255]
+    label_info = [50,133]
     train_dataset = SegmentationDataset(data_path_list=train_path_list,
                                         label_info=label_info)
 
@@ -444,6 +439,7 @@ def download_image(download_path, train_ratio, input_size, base_size = None):
 def download_image2():
     image_folder = "D:\\workspace\\data\\ADI_BALL_768_Aug\\image\\"
     mask_folder = "D:\\workspace\\data\\ADI_BALL_768_Aug\\mask\\"
+    # mask_folder = "D:\\workspace\\data\\ADI_BALL_768_Aug\\mask_aug\\"
 
     image_path_list = list()
     mask_path_list = list()
@@ -466,11 +462,10 @@ class SegmentationDataset(data.Dataset):
         assert (len(self.image_path_list) == len(self.mask_path_list))
 
         self.label_info = label_info
-        self._key= np.full(max(self.label_info)+2, -1)
+        self._key= np.full(255+2, -1)
 
         for i, label in enumerate(label_info):
             self._key[label+1] = i
-
         self._mapping = np.array(range(-1, len(self._key) - 1)).astype('int32')
 
     def __getitem__(self, index):
@@ -486,7 +481,6 @@ class SegmentationDataset(data.Dataset):
         for value in values:
             assert (value in self._mapping)
         index = np.digitize(mask.ravel(), self._mapping, right=True)
-
         target = self._key[index].reshape(mask.shape)
         return torch.LongTensor(np.array(target).astype('int32'))
 
