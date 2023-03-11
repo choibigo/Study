@@ -26,8 +26,8 @@ parser = argparse.ArgumentParser(description='HED training.')
 # 1. Actions.
 parser.add_argument('--test',             default=False,             help='Only test the model.', action='store_true')
 # 2. Counts.
-parser.add_argument('--train_batch_size', default=1,    type=int,   metavar='N', help='Training batch size.')
-parser.add_argument('--test_batch_size',  default=1,    type=int,   metavar='N', help='Test batch size.')
+parser.add_argument('--train_batch_size', default=32,    type=int,   metavar='N', help='Training batch size.')
+parser.add_argument('--test_batch_size',  default=32,    type=int,   metavar='N', help='Test batch size.')
 parser.add_argument('--train_iter_size',  default=10,   type=int,   metavar='N', help='Training iteration size.')
 parser.add_argument('--max_epoch',        default=40,   type=int,   metavar='N', help='Total epochs.')
 parser.add_argument('--print_freq',       default=500,  type=int,   metavar='N', help='Print frequency.')
