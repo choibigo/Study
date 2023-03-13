@@ -41,17 +41,16 @@ class BsdsDataset(data.Dataset):
             edge_path = join(self.dataset_dir, self.edges_path[index])
             edge = cv2.imread(edge_path, cv2.IMREAD_GRAYSCALE)
 
-            cv2.imwrite(r'D:\temp\edge_1.png', edge)
-
             edge = edge[np.newaxis, :, :]  # Add one channel at first (CHW).
 
             edge[edge < 127.5]  = 0.0
             edge[edge >= 127.5] = 1.0
-            cv2.imwrite(r'D:\temp\edge_2.png', edge[0]*255)
+            
 
         # Get image.
         image_path = join(self.dataset_dir, self.images_path[index])
         image = cv2.imread(image_path).astype(np.float32)
+
         # Note: Image arrays read by OpenCV and Matplotlib are slightly different.
         # Matplotlib reading code:
         #   image = plt.imread(image_path).astype(np.float32)
@@ -61,6 +60,7 @@ class BsdsDataset(data.Dataset):
         image = image - np.array((104.00698793,  # Minus statistics.
                                   116.66876762,
                                   122.67891434))
+        
         image = np.transpose(image, (2, 0, 1))   # HWC to CHW.
         image = image.astype(np.float32)         # To float32.
 
