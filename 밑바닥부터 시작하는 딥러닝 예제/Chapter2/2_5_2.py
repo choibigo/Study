@@ -36,7 +36,7 @@ def XOR(x1, x2):
     return AND(s1, s2)
 
 if __name__ == "__main__":
-    print(XOR(1,1)) # 1
-    print(XOR(1,0)) # 0
-    print(XOR(0,1)) # 0
+    print(XOR(1,1)) # 0
+    print(XOR(1,0)) # 1
+    print(XOR(0,1)) # 1
     print(XOR(0,0)) # 0
