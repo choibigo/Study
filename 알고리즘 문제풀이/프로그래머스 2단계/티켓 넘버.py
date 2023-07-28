@@ -1,39 +1,17 @@
-def DFS(v):
-    global count
-    
-    if v == number_size:
-        if sum(res) == g_target:
-            count +=1
-        return 
-    
-    res.append(g_numbers[v])
-    DFS(v+1)
-    res.pop()
-    
-    res.append(g_numbers[v] * -1)
-    DFS(v+1)
-    res.pop()
-    
-    
-
-res = list()
-count = 0
-number_size = 0
-g_numbers  = list()
-g_target = 0
-
 def solution(numbers, target):
-    answer = 0
+    count = 0
     
-    global number_size
-    number_size = len(numbers)
+    def DFS(v, cal_val):
+        nonlocal count
+        
+        if v == len(numbers):
+            if cal_val == target:
+                count +=1
+            return 
+        
+        DFS(v+1, cal_val+numbers[v])
+        DFS(v+1, cal_val-numbers[v])
     
-    global g_numbers
-    g_numbers = numbers
-    
-    global g_target
-    g_target = target
-    
-    DFS(0)
-    
+    DFS(0, 0)
     return count
+    

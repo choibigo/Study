@@ -1,79 +1,68 @@
-import json
-import os
-import pickle
-from PIL import Image
-import numpy as np
 import torch
-import torch.nn as nn
 import torchvision.transforms as transforms
+import json
 
 class ModelHandler:
-    def __init__(self, data, context):
-        self._initialize()
-        model_config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model.json")
-        with open(model_config_file_path, "r", encoding='utf-8') as config_file:
-            self.config = json.load(config_file)
-            self.model_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), self.config['model_file'])
+    def __init__(self, model_path, resize = 32):
+        self.__resize = resize
+        self.__device = "cpu"
 
-        if self._framework_type.lower() == 'pytorch':
-            self.model = self._load_model()
+        self.__model_file_path = model_path
+        self.__model, self.__label_info = self.__load_model()
 
-        else:
-            raise NotImplementedError
+    def __call__(self, data):
+        output = self.__inference(data)
+        return output
 
-    def __call__(self, data, context):
-        if self._framework_type.lower() == 'pytorch':
-            return self.inference(data, context)
-        else:
-            raise NotImplementedError
+    def __load_model(self):
+        extra_files = {'label_info' : {}}
+        model = torch.jit.load(self.__model_file_path, map_location=self.__device, _extra_files=extra_files)
+        model.eval()
 
-    def _initialize(self):
-        self._framework_type = "pytorch"
-        self.device = 'cpu'
+        label_info = extra_files['label_info'].decode('ascii')
+        label_info = json.loads(label_info)
 
-    def _load_model(self):
-        model = torch.jit.load(self.model_file_path)
-        model.eval().to(self.device)
-        return model
+        return model, label_info
 
-    def inference(self, data, context, *args, **kwargs):
-        data = pickle.loads(data)
-        data = self._preprocessing(data)
-        output = self.model(data)
-        output = self._postprocessing(output)
-        return output, context
+    def __inference(self, data): 
+        data = self.__preprocessing(data)
+        output, _, _ = self.__model(data)
+        output = self.__postprocessing(output[0])
+        return output
 
-    def _preprocessing(self, image):
-        image = Image.fromarray(np.uint8(image))
+    def __preprocessing(self, image):
         transform = transforms.Compose([
-                    transforms.ToTensor()])
+                    transforms.ToTensor(),
+                    transforms.Resize((self.__resize,self.__resize))])
         image = transform(image)
         image = image.unsqueeze(0)
-
         return image
 
-    def _postprocessing(self, result):
-        output = dict()
-        for i, score in enumerate(result[0][0], 1):
-            output[i] = score.item()
+    def __postprocessing(self, result):
+
+        output = list()
+        for i in range(self.__label_info['label_count']):
+            current_label = self.__label_info[f'label_{i}']
+            current_label['score'] = result[i].item()
+            output.append(current_label)
+
+        output = sorted(output, key = lambda x : x['score'], reverse=True)
 
         return output
 
-
 if __name__ == "__main__":
-    
+
     import cv2
-    from skimage.io import imsave
-
-    test_data_path = r"D:\temp\inference\data\DNCNN\02_dncnn_input.png"
+    test_data_path = r"D:\workspace\data\Classification\CIFAR-10-images-master\train\ship\0000.jpg"
     test_data = cv2.imread(test_data_path, 1)
-    test_data_pickle = pickle.dumps(test_data)
 
-    # =================================================================== #
+    model_path = r"D:\temp\save_model\GoogleNet\googlenet_1.pth"
 
-    handler = ModelHandler(None, None)
-    inference_result, context =  handler(test_data_pickle, None)
+    # # =================================================================== #
 
-    # =================================================================== #
+    handler = ModelHandler(model_path)
+    inference_result =  handler(test_data)
 
-    print(inference_result)
+    # # =================================================================== #
+
+    print(*inference_result, sep="\n")

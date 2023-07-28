@@ -1,42 +1,80 @@
-def rotate(str_list):
-    temp = str_list[1:]
-    temp.append(str_list[0])
-    return temp
-
-def check_str(target_str):
-    stack_list = list()
+def check(bracket_list):
     
-    for i in range(len(target_str)):
-        char = target_str[i]
+    stack = list()
+    
+    for b in bracket_list:
         
-        if char.isalpha():
-            pass
+        if len(stack) == 0:
+            if b in ["]", "", "}"]:
+                return 0
+            
+            stack.append(b)
+        elif b in ["[", "(", "{"]:
+            stack.append(b)
         else:
-            if char == "[" or char == "(" or char == "{":
-                stack_list.append(char)
-            else:
-                if len(stack_list) == 0:
-                    return False
+            if b == "]":
+                if stack[-1] == "[":
+                    stack.pop()
                 else:
-                    if char =="]":
-                        if stack_list[-1] == "[":
-                            stack_list.pop()
-                    elif char ==")":
-                        if stack_list[-1] == "(":
-                            stack_list.pop()
-                    elif char =="}":
-                        if stack_list[-1] == "{":
-                            stack_list.pop()
-    return len(stack_list) == 0
+                    return 0
+            elif b == ")":
+                if stack[-1] == "(":
+                    stack.pop()
+                else:
+                    return 0
+            elif b == "}":
+                if stack[-1] == "{":
+                    stack.pop()
+                else:
+                    return 0
+        
+    return 1 if len(stack) == 0 else 0 
 
 def solution(s):
+
+    count = 0
+    for _ in range(len(s)):
+        s = s[1:]+s[0]
+        count += check(s)
+            
+    return count
+def check(bracket_list):
     
-    target_str = list(s)
+    stack = list()
     
-    answer = 0
-    for _ in range(len(target_str)):
-        target_str = rotate(target_str)
-        if check_str(target_str):
-            answer += 1
-    
-    return answer
+    for b in bracket_list:
+        
+        if len(stack) == 0:
+            if b in ["]", "", "}"]:
+                return 0
+            
+            stack.append(b)
+        elif b in ["[", "(", "{"]:
+            stack.append(b)
+        else:
+            if b == "]":
+                if stack[-1] == "[":
+                    stack.pop()
+                else:
+                    return 0
+            elif b == ")":
+                if stack[-1] == "(":
+                    stack.pop()
+                else:
+                    return 0
+            elif b == "}":
+                if stack[-1] == "{":
+                    stack.pop()
+                else:
+                    return 0
+        
+    return 1 if len(stack) == 0 else 0 
+
+def solution(s):
+
+    count = 0
+    for _ in range(len(s)):
+        s = s[1:]+s[0]
+        count += check(s)
+            
+    return count

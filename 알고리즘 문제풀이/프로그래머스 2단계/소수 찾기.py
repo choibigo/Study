@@ -1,38 +1,24 @@
-def primenumber(x):
-    for i in range(2, int(x** 1/2)+1):
-        if x % i == 0:
+def is_prime(num):
+    if num<=1:
+        return False
+    for i in range(2, int(num**0.5)+1):
+        if num%i==0:
             return False
     return True
 
-def DFS(v, numbers):
-    global ch 
-
-    if len(res) != 0:
-        temp_num = int("".join(res))
-        if temp_num >=2 and primenumber(temp_num):
-            answer.add(temp_num)
-    
-    if v == len(numbers):
-        return
-    
-    for i in range(0, len(numbers)):
-        if ch[i] == -1:
-            ch[i] = 0
-            res.append(numbers[i])
-            DFS(v+1, numbers)
-            res.pop()
-            ch[i] = -1
-    
-res = list()
-ch = list()
-answer = set()
-
 def solution(numbers):
-
-    global ch
-    ch = [-1] * (len(numbers))
     
-    numbers = list(numbers)
-    DFS(0, numbers)
+    res = [False] * len(numbers)
+    answer = set()    
+    def DFS(n):
+        if len(n) and is_prime(int(n)):
+            answer.add(int(n))
+        
+        for i in range(len(numbers)):
+            if not res[i]:
+                res[i] = True
+                DFS(n+numbers[i])
+                res[i] = False
     
-    return len(list(answer))
+    DFS('')
+    return len(answer)
