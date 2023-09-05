@@ -3,4 +3,6 @@ input.txt
 *.zip
 *.pth
 *.png
+*.pth
+*.pt
 /data
