@@ -5,7 +5,7 @@ import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 
-from common.utill import clip_grads
+from common.util import clip_grads
 
 class Trainer:
     def __init__(self, model, optimizer):
