@@ -7,16 +7,15 @@ from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 from sklearn.cluster import DBSCAN
 
-# data = load_digits().data
-
-K = 5
+K = 10
 save_root_path = os.path.join(r"C:\Users\cbigo\Desktop\temp", f"k_{K}")
 os.makedirs(save_root_path, exist_ok=True)
 
 for label in range(K):
     os.makedirs(os.path.join(save_root_path, f"{label}"), exist_ok=True)
 
-data = np.load('total_feature.npy')
+interval = 1
+data = np.load('feature_2_27_1.npy')[::interval]
 
 # K-means 클러스터링
 
@@ -37,6 +36,7 @@ cluster_colors = [colors[label] for label in cluster_labels]
 
 image_root_path = r"D:\workspace\Difficult\dataset\behavior_scene_image\rn_int_leaf_pencase"
 for image_num, label in enumerate(cluster_labels):
+    image_num *= interval
     copyfile(os.path.join(image_root_path, f"{image_num}.png", ), os.path.join(save_root_path, f"{label}", f"{image_num}.png"))
 
 # t-SNE 결과를 3D scatter plot으로 표시

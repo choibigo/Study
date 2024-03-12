@@ -10,12 +10,14 @@ from sklearn.cluster import DBSCAN
 save_root_path = os.path.join(r"C:\Users\cbigo\Desktop\temp", f"dbscan")
 os.makedirs(save_root_path, exist_ok=True)
 
-data = np.load('total_feature.npy')
+data = np.load('feature_2_27.npy')
 
 # K-means 클러스터링
 
-dbscan = DBSCAN(eps=0.03, min_samples=5)
+dbscan = DBSCAN(eps=26, min_samples=4)
 cluster_labels = dbscan.fit_predict(data)
+
+print(set(cluster_labels))
 
 # t-SNE를 사용하여 3차원으로 축소
 tsne = TSNE(n_components=3, random_state=42)
